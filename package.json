@@ -1,0 +1,29 @@
+{
+  "name": "dat-elasticsearch-upload",
+  "version": "0.0.0",
+  "description": "Upload from dat to elasticsearch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/astro/dat-elasticsearch-upload.git"
+  },
+  "keywords": [
+    "dat",
+    "elasticsearch"
+  ],
+  "author": "Astro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/astro/dat-elasticsearch-upload/issues"
+  },
+  "dependencies": {
+    "dat": "^6.1.0",
+    "geopipes-elasticsearch-backend": "0.0.4",
+    "pelias-esclient": "0.0.22",
+    "progress": "^1.1.8",
+    "through2": "^0.6.1"
+  }
+}
