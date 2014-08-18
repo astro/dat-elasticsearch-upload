@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "description": "Upload from dat to elasticsearch",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "es-upload": "es-upload.js",
+    "es-osm-upload": "es-osm-upload.js"
   },
   "repository": {
     "type": "git",

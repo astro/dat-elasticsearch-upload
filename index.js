@@ -1,42 +1,44 @@
-var esclient = require('pelias-esclient')();
 var ESBackend = require('geopipes-elasticsearch-backend');
-var elasticsearch = new ESBackend(esclient, 'osm');
 var through2 = require('through2');
 var ProgressBar = require('progress');
 
-var PROGRESS_GRAIN = 1000;
+module.exports = function(dat, esclient, opts) {
+    var elasticsearch = new ESBackend(esclient, 'osm');
 
-var dat = require('dat')(process.argv[2] || ".", function(err) {
-    if (err) {
-        console.error(err);
-        return;
+    if (opts.noProgress) {
+        run(dat, elasticsearch, function() {}, opts);
+    } else {
+        dat.getRowCount(function(err, total) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            var progressGrain = opts.progressGrain || 1000;
+            var progress = new ProgressBar(":percent [:bar] :eta", { total: Math.floor(total / progressGrain) });
+            var ticks = 0;
+            var tick = function() {
+                ticks++;
+                if (ticks >= progressGrain) {
+                    progress.tick();
+                    ticks = 0;
+                }
+            };
+            run(dat, elasticsearch, tick, opts);
+        });
+    }
+};
+
+function run(dat, elasticsearch, tick, opts) {
+    var stream = dat.createReadStream();
+    if (opts.transform) {
+        stream = stream.pipe(opts.transform);
     }
 
-    dat.getRowCount(function(err, total) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-
-        var stream = dat.createReadStream();
-        var elementFilter = false;
-        if (elementFilter) {
-            stream = stream.pipe();
-        }
-
-        var progress = new ProgressBar(":percent [:bar] :eta", { total: Math.floor(total / PROGRESS_GRAIN) });
-        var grain = 0;
-        stream = stream.pipe(through2.obj(function(chunk, enc, cb) {
-            chunk._type = chunk.type;
-            this.push(chunk);
-
-            grain++;
-            if (grain == PROGRESS_GRAIN) {
-                progress.tick();
-                grain = 0;
-            }
-            cb();
-        })).pipe(elasticsearch.createPullStream());
-    });
-});
-
+    stream = stream.pipe(through2.obj(function(chunk, enc, cb) {
+        chunk._type = chunk.type;
+        this.push(chunk);
+        cb();
+        tick();
+    })).pipe(elasticsearch.createPullStream());
+};
