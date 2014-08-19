@@ -22,8 +22,7 @@
   },
   "dependencies": {
     "dat": "^6.1.0",
-    "geopipes-elasticsearch-backend": "0.0.4",
-    "pelias-esclient": "0.0.22",
+    "elasticsearch": "^2.4.0",
     "progress": "^1.1.8",
     "through2": "^0.6.1"
   }

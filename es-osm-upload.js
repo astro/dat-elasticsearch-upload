@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-var esclient = require('pelias-esclient')();
+var ES = require('elasticsearch');
+var esclient = new ES.Client();
 var datESUpload = require('./index');
 var through2 = require('through2');
 
@@ -33,7 +34,6 @@ function ready(err) {
 
     esclient.indices.create( {
         index: INDEX_NAME,
-        type: 'element',
         body: ES_SCHEMA
     }, function(err) {
         if (err) {
@@ -56,7 +56,11 @@ function ready(err) {
                     if (el.center) {
                         el.center_lon_lat = [el.center.lon, el.center.lat];
                     }
-                    this.push(el);
+                    this.push({
+                        type: el.type,
+                        id: el.id,
+                        source: el
+                    });
                     cb();
                 }.bind(this);
 
