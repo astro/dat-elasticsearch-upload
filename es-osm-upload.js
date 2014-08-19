@@ -37,8 +37,8 @@ function ready(err) {
         body: ES_SCHEMA
     }, function(err) {
         if (err) {
-            console.error(err);
-            return;
+            console.error(err.message);
+            console.log("Proceeding...");
         }
 
         datESUpload(dat, esclient, {
