@@ -3,7 +3,7 @@ var through2 = require('through2');
 var ProgressBar = require('progress');
 
 module.exports = function(dat, esclient, opts) {
-    var elasticsearch = new ESBackend(esclient, opts.index || 'osm');
+    var elasticsearch = new ESBackend(esclient, opts.index, opts.type);
 
     if (opts.noProgress) {
         run(dat, elasticsearch, function() {}, opts);
@@ -36,7 +36,6 @@ function run(dat, elasticsearch, tick, opts) {
     }
 
     stream = stream.pipe(through2.obj(function(chunk, enc, cb) {
-        chunk._type = chunk.type;
         this.push(chunk);
         cb();
         tick();

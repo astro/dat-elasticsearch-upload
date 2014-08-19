@@ -9,5 +9,5 @@ function ready(err) {
         return;
     }
 
-    datESUpload(dat, esclient);
+    datESUpload(dat, esclient, { index: process.argv[3] || "dat", type: process.argv[4] || "item" });
 }

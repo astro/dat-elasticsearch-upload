@@ -33,6 +33,7 @@ function ready(err) {
 
     esclient.indices.create( {
         index: INDEX_NAME,
+        type: 'element',
         body: ES_SCHEMA
     }, function(err) {
         if (err) {
@@ -43,6 +44,7 @@ function ready(err) {
         datESUpload(dat, esclient, {
             index: INDEX_NAME,
             transform: through2.obj(function(el, enc, cb) {
+                el._type = el.type;
                 el.info.timestamp = new Date(el.info.timestamp);
                 var push = function() {
                     if (el.lat && el.lon) {
