@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var esclient = require('pelias-esclient')();
 var datESUpload = require('./index');
 
