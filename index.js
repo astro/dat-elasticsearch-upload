@@ -3,7 +3,7 @@ var through2 = require('through2');
 var ProgressBar = require('progress');
 
 module.exports = function(dat, esclient, opts) {
-    var elasticsearch = new ESBackend(esclient, 'osm');
+    var elasticsearch = new ESBackend(esclient, opts.index || 'osm');
 
     if (opts.noProgress) {
         run(dat, elasticsearch, function() {}, opts);
