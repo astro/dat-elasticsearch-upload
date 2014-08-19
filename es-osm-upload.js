@@ -65,10 +65,7 @@ function ready(err) {
                     };
                     push();
                 } else if (el.type === 'way') {
-                    var t1 = Date.now();
                     fetchWayNodes(dat, el, function(err, nodes) {
-                        var t2 = Date.now();
-                        console.log("Got", el.refs.length, "in", (t2 - t1), "ms");
                         nodes = nodes || [];
                         var lat = 0, lon = 0, points = [];
                         nodes.forEach(function(node) {
@@ -96,23 +93,26 @@ function ready(err) {
 }
 
 function fetchWayNodes(dat, way, cb) {
-    var refs = way.refs || [];
-    var i = 0;
     var results = [];
-    function go() {
-        if (i < refs.length) {
-            dat.get(refs[i], function(err, node) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    results.push(node);
-                }
-                i++;
-                go();
-            });
-        } else {
+    var pending = 1;
+    var done = function() {
+        pending--;
+        if (pending < 1) {
             cb(null, results);
         }
+    };
+
+    var refs = way.refs || [];
+    for(var i = 0; i < refs.length; i++) {
+        dat.get(refs[i], function(err, node) {
+            if (err) {
+                console.error(err);
+            } else {
+                results.push(node);
+            }
+            done();
+        });
+        pending++;
     }
-    go();
+    done();
 }
