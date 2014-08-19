@@ -78,12 +78,11 @@ function ready(err) {
                         });
                         el.lat = lat / nodes.length;
                         el.lon = lon / nodes.length;
-                        var isArea = el.tags.area == 'yes' &&
-                            points.length > 3 &&
+                        var isArea = points.length > 3 &&
                             points[0] === points[points.length - 1];
                         el.location = {
                             type: isArea ? 'polygon' : 'linestring',
-                            coordinates: points
+                            coordinates: isArea ? [points] : points
                         };
                         push();
                     });
