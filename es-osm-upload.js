@@ -8,7 +8,7 @@ var ES_TYPE_MAPPING = {
     _all: { enabled: true },
     date_detection: false,
     properties: {
-        location : { type : "geo_shape", precision: "1m" },
+        location : { type : "geo_shape", precision: "50m" },
         center: { type: 'geo_point', lat_lon: true },
         // This is what Kibana displays in bettermap
         center_lon_lat: { type: 'string', store: true, index: 'no' },
@@ -51,7 +51,7 @@ function ready(err) {
                         };
                     }
                     if (el.center) {
-                        el.center_lon_lat = el.center.lon + "," + el.center.lat;
+                        el.center_lon_lat = [el.center.lon, el.center.lat];
                     }
                     this.push(el);
                     cb();
